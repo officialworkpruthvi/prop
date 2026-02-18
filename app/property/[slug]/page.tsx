@@ -8,123 +8,174 @@ import Header from "@/components/Header";
 
 function Sections({ listing }: any) {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20">
-      <div className="grid lg:grid-cols-3 gap-8">
+    <div className="bg-[#f6f8f7] py-16">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-3 gap-10">
 
-        {/* LEFT - Section Content */}
-        <div className="lg:col-span-2 space-y-28">
+          {/* LEFT CONTENT */}
+          <div className="lg:col-span-2 space-y-20">
 
-          {/* LAYOUT */}
-          <Section id="layout" title="Layout Plans">
-            <ImageGrid images={listing.floorPlanImages} />
-          </Section>
+            {/* LAYOUT */}
+            <SectionCard title="Layout Plan">
+              <ImageGrid images={listing.floorPlanImages} />
+            </SectionCard>
 
-          {/* DETAILS */}
-          <Section id="details" title="Property Details">
-            <ul className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
-              <li><strong>Developer:</strong> {listing.developerName}</li>
-              <li><strong>Project Area:</strong> {listing.projectArea}</li>
-              <li><strong>Total Units:</strong> {listing.totalUnits}</li>
-              <li><strong>Status:</strong> {listing.status}</li>
-              <li><strong>RERA:</strong> {listing.reraId}</li>
-              <li><strong>Possession:</strong> {listing.possessionDate}</li>
-            </ul>
-          </Section>
+            {/* PROPERTY DETAILS — MOST IMPORTANT PART */}
+            <SectionCard title="Property Details">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
+                
+                <DetailItem label="Units" value={listing.totalUnits} />
+                <DetailItem label="Project Area" value={listing.projectArea} />
+                <DetailItem label="Carpet Area" value={listing.carpetArea} />
 
-          {/* CONFIGURATIONS */}
-          <Section id="highlights" title="Configurations">
-            <div className="grid md:grid-cols-3 gap-6">
-              {listing.configurations?.map((c: any, i: number) => (
-                <div
-                  key={i}
-                  className="bg-white p-6 rounded-2xl border hover:shadow-md transition"
-                >
-                  <div className="text-lg font-medium">{c.type}</div>
-                  <div className="text-sm text-gray-600 mt-1">
-                    {c.carpetArea}
+                <DetailItem label="Configurations" value={listing.configurationsText} />
+                <DetailItem label="Developer" value={listing.developerName} />
+                <DetailItem label="Status" value={listing.status} />
+
+                <DetailItem label="Property Type" value="Residential" />
+                <DetailItem label="RERA ID" value={listing.reraId} />
+                <DetailItem label="Possession" value={listing.possessionDate} />
+
+              </div>
+            </SectionCard>
+
+            {/* CONFIGURATIONS */}
+            <SectionCard title="Configurations">
+              <div className="grid md:grid-cols-3 gap-6">
+                {listing.configurations?.map((c: any, i: number) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition"
+                  >
+                    <div className="text-lg font-semibold text-gray-800">
+                      {c.type}
+                    </div>
+                    <div className="text-gray-500 mt-1 text-sm">
+                      {c.carpetArea}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Section>
+                ))}
+              </div>
+            </SectionCard>
 
-          {/* AMENITIES */}
-          <Section id="amenities" title="Amenities">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {listing.amenities?.map((a: string) => (
-                <div
-                  key={a}
-                  className="bg-white text-sm px-4 py-3 rounded-xl border text-gray-700"
-                >
-                  {a}
-                </div>
-              ))}
-            </div>
-          </Section>
+            {/* AMENITIES */}
+            <SectionCard title="Amenities">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {listing.amenities?.map((a: string) => (
+                  <div
+                    key={a}
+                    className="bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700"
+                  >
+                    {a}
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
 
-          {/* LOCATION */}
-          <Section id="location" title="Location">
-            <iframe
-              src={listing.mapLink}
-              className="w-full h-[420px] rounded-2xl border"
-              loading="lazy"
-            />
-          </Section>
+            {/* LOCATION */}
+            <SectionCard title="Location">
+              <iframe
+                src={listing.mapLink}
+                className="w-full h-[420px] rounded-xl border border-gray-200"
+                loading="lazy"
+              />
+            </SectionCard>
 
-          {/* DEVELOPER */}
-          <Section id="developer" title="About Developer">
-            <p className="text-gray-600 max-w-3xl">
-              {listing.developerName} is a reputed real estate developer known
-              for timely delivery, premium construction quality, and thoughtful design.
-            </p>
-          </Section>
+            {/* DEVELOPER */}
+            <SectionCard title="About Developer">
+              <p className="text-gray-600 leading-relaxed max-w-3xl">
+                {listing.developerName} is a reputed real estate developer known
+                for timely delivery, premium construction quality, and thoughtful design.
+              </p>
+            </SectionCard>
+
+          </div>
+
+          {/* RIGHT SIDE FORM */}
+          <div className="hidden lg:block">
+            <StickyForm />
+          </div>
 
         </div>
 
-        {/* RIGHT - Sticky Form */}
-        <div className="hidden lg:block">
+        {/* MOBILE FORM */}
+        <div className="lg:hidden mt-14">
           <StickyForm />
         </div>
-
-      </div>
-
-      {/* Mobile Form */}
-      <div className="lg:hidden mt-10">
-        <StickyForm />
       </div>
     </div>
   );
 }
+function SectionCard({ title, children }: any) {
+  return (
+    <section>
+      <div className="bg-white rounded-[22px] border border-gray-200 overflow-hidden">
+        
+        {/* soft grey header strip */}
+        <div className="bg-[#eef2f1] px-8 py-5">
+          <h2 className="text-xl font-semibold text-gray-800">
+            {title}
+          </h2>
+        </div>
 
+        <div className="p-8">
+          {children}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+function DetailItem({ label, value }: any) {
+  return (
+    <div className="border-b border-gray-200 pb-4">
+      <div className="text-gray-500 text-sm">{label}</div>
+      <div className="text-gray-800 font-medium mt-1">{value}</div>
+    </div>
+  );
+}
 function StickyForm() {
   return (
-    <div className="sticky top-24 bg-white p-6 rounded-2xl border shadow-md space-y-4">
-      <h3 className="text-lg font-semibold">Get a call back from our expert</h3>
-      <input
-        type="text"
-        placeholder="Name"
-        className="w-full border rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600"
-      />
-      <input
-        type="email"
-        placeholder="Email (optional)"
-        className="w-full border rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600"
-      />
-      <input
-        type="tel"
-        placeholder="Phone Number"
-        className="w-full border rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600"
-      />
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" className="w-4 h-4" />
-        I agree to the <a href="#" className="text-green-600 underline">terms and conditions</a>
-      </label>
-      <button className="w-full bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition">
-        ENQUIRE NOW
-      </button>
+    <div className="sticky top-24 bg-white border border-gray-200 rounded-[22px] p-7">
+      <h3 className="text-xl font-semibold text-gray-800 mb-5">
+        Get a call back from our expert
+      </h3>
+
+      <div className="space-y-4">
+        <input
+          type="text"
+          placeholder="Name"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
+        />
+
+        <input
+          type="email"
+          placeholder="Email (optional)"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
+        />
+
+        <input
+          type="tel"
+          placeholder="Phone Number"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
+        />
+
+        <label className="flex items-start gap-2 text-sm text-gray-600">
+          <input type="checkbox" className="mt-1 w-4 h-4" />
+          I agree to the
+          <span className="text-green-600 underline cursor-pointer">
+            terms and conditions
+          </span>
+        </label>
+
+        <button className="w-full bg-[#35a66a] hover:bg-[#2f955f] text-white py-3 rounded-lg font-semibold transition">
+          ENQUIRE NOW
+        </button>
+      </div>
     </div>
   );
 }
+
 
 
 export default function PropertyPage() {
@@ -164,7 +215,6 @@ import React from "react";
 type HeroProps = {
   listing: any;
 };
-
 const Hero: React.FC<HeroProps> = ({ listing }) => {
   const amenities: string[] = Array.isArray(listing?.amenities)
     ? listing.amenities
@@ -173,130 +223,156 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
     : [];
 
   return (
-    <section className="w-full bg-white border-b shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 py-10 lg:py-14 grid lg:grid-cols-3 gap-8 items-start">
+    <section className="bg-[#f6f8f7] pt-10 pb-6">
+      <div className="max-w-7xl mx-auto px-6">
 
-        {/* LEFT - PROPERTY IMAGE / GALLERY */}
-        <div className="col-span-1 rounded-2xl overflow-hidden shadow-lg border relative">
-          <img
-            src={listing?.propertyImages?.[0]}
-            alt={listing?.propertyName}
-            className="w-full h-[360px] lg:h-[500px] object-cover transition-transform duration-500 hover:scale-105"
-          />
-        </div>
+        {/* MAIN HERO CARD */}
+        <div className="relative bg-white rounded-[28px] border border-gray-200 p-6 lg:p-8 grid lg:grid-cols-2 gap-8 items-start overflow-hidden">
 
-        {/* RIGHT - INFO + QR */}
-        <div className="col-span-2 flex flex-col lg:flex-row gap-6 lg:gap-10">
 
-          {/* LEFT SIDE - Property Info */}
-          <div className="flex-1 flex flex-col gap-4">
-            <div className="space-y-1">
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                {listing?.propertyName || "Untitled Project"}
-              </h1>
-              <p className="text-gray-600 text-sm">
-                By {listing?.developerName || "Unknown Developer"}
-              </p>
+          {/* LEFT IMAGE */}
+          <div className="rounded-[22px] overflow-hidden">
+            <img
+              src={listing?.propertyImages?.[0]}
+              alt={listing?.propertyName}
+              className="w-full h-[260px] sm:h-[340px] lg:h-[420px] object-cover"
+            />
+          </div>
+
+          {/* RIGHT CONTENT */}
+          <div className="flex flex-col gap-5">
+
+            {/* TITLE + COMPARE */}
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
+                  {listing?.propertyName}
+                </h1>
+                <p className="text-gray-500 text-sm mt-1">
+                  By {listing?.developerName}
+                </p>
+              </div>
+
+              
             </div>
 
-            {/* Configurations */}
+            {/* CONFIG TAGS */}
             {listing?.configurations?.length > 0 && (
-              <div className="flex gap-2 flex-wrap mt-2">
+              <div className="flex gap-2 flex-wrap">
                 {listing.configurations.map((conf: any, idx: number) => (
                   <span
                     key={idx}
-                    className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                    className="bg-[#eef6f1] text-[#2f855a] px-3 py-1 rounded-md text-sm"
                   >
-                    {conf.type} {conf.carpetArea && `• ${conf.carpetArea} sq.ft`}
+                    {conf.type}
                   </span>
                 ))}
               </div>
             )}
 
-            {/* Location */}
-            {listing?.address && (
-              <p className="text-gray-600 flex items-center gap-1 mt-2">
-                <span>📍</span> {listing.address}
-              </p>
-            )}
+            {/* LOCATION */}
+            <p className="text-gray-600 text-sm">
+              📍 {listing.address}
+            </p>
 
-            {/* Divider */}
-            <hr className="my-4 border-gray-300" />
+            <hr className="border-gray-200" />
 
-            {/* Project Stats */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-green-50 border border-green-100 rounded-lg p-3">
-                <p className="text-xs text-gray-500">Starting Price</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  ₹{listing?.price?.startingPrice || "—"}
-                </p>
-              </div>
-
-              <div className="bg-green-50 border border-green-100 rounded-lg p-3">
-                <p className="text-xs text-gray-500">Project Area</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {listing?.projectArea || "—"} Acres
-                </p>
-              </div>
-
-              <div className="bg-green-50 border border-green-100 rounded-lg p-3">
-                <p className="text-xs text-gray-500">Total Units</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {listing?.totalUnits || "—"}
-                </p>
-              </div>
-            </div>
-
-            {/* Amenities */}
+            {/* AMENITIES PILLS */}
             {amenities.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {amenities.slice(0, 6).map((item, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full border"
-                  >
+              <div className="flex flex-wrap gap-2">
+                {amenities.slice(0, 3).map((item, i) => (
+                  <span key={i} className="px-3 py-1 border rounded-full text-sm text-gray-600">
                     {item.trim()}
                   </span>
                 ))}
-                {amenities.length > 6 && (
-                  <span className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full">
-                    +{amenities.length - 6}
+                {amenities.length > 3 && (
+                  <span className="px-3 py-1 border rounded-full text-sm text-gray-600">
+                    +{amenities.length - 3}
                   </span>
                 )}
               </div>
             )}
+
+            {/* CARPET AREA */}
+            <div className="text-gray-700">
+              Carpet area:{" "}
+              <span className="font-semibold">
+                {listing?.carpetArea || "895"} sq.ft.
+              </span>
+            </div>
+
+            {/* PRICE STATS */}
+            <div className="grid grid-cols-3 gap-3">
+              <StatBox title="Avg Price /Sq.ft" value={`₹ ${listing?.price?.avgSqft || "6,141"}`} />
+              <StatBox title="Total Price" value={`₹ ${listing?.price?.total || "86.48L"}`} />
+              <StatBox title="EMI Starts At" value={`₹ ${listing?.price?.emi || "77.81K"}`} />
+            </div>
+
+            {/* CTA BUTTONS */}
+            <div className="flex gap-3 pt-2">
+              <button className="bg-[#35a66a] hover:bg-[#2f955f] text-white px-6 py-3 rounded-xl font-semibold">
+                Contact Now
+              </button>
+             
+            </div>
+
           </div>
 
-          {/* RIGHT SIDE - QR + Share */}
-          <div className="w-full lg:w-auto flex flex-col items-center gap-3 mt-6 lg:mt-0">
-            {listing?.qrCodeImage && (
-              <div className="bg-white p-3 rounded-xl shadow-md border flex flex-col items-center">
-                <img
-                  src={listing.qrCodeImage}
-                  alt="QR Code"
-                  className="w-24 h-24 object-contain"
-                />
-                <p className="text-xs text-center mt-1 text-gray-500">
-                  Scan for brochure
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                alert("Property link copied!");
-              }}
-              className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 text-sm"
-            >
-              Share Property
-            </button>
-          </div>
+          {/* QR FLOAT (DESKTOP ONLY) */}
+          {listing?.qrCodeImage && (
+            <div className="hidden lg:flex absolute right-10 top-5 flex-col items-center bg-white border border-gray-200 rounded-2xl p-4">
+              <img
+                src={listing.qrCodeImage}
+                className="w-28 h-28 object-contain"
+              />
+              <p className="text-xs text-gray-500 mt-2">Scan for brochure</p>
+            </div>
+          )}
+          <ShareFab />
         </div>
       </div>
     </section>
   );
 };
+function StatBox({ title, value }: any) {
+  return (
+    <div className="border border-[#bfe3ce] bg-[#eef6f1] rounded-xl p-3">
+      <div className="text-xs text-gray-600">{title}</div>
+      <div className="font-semibold text-gray-900 mt-1">{value}</div>
+    </div>
+  );
+}
+function ShareFab() {
+  const share = async () => {
+    const url = window.location.href;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: document.title,
+        url
+      });
+    } else {
+      await navigator.clipboard.writeText(url);
+      alert("Property link copied!");
+    }
+  };
+
+  return (
+    <button
+      onClick={share}
+      className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#243b55] hover:bg-[#1e2f44] flex items-center justify-center shadow-md transition"
+      aria-label="Share Property"
+    >
+      {/* SVG Share Icon */}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M18 8a3 3 0 10-2.83-4H15a3 3 0 000 6c.5 0 .97-.12 1.39-.34L8.91 12.7A3 3 0 006 11a3 3 0 100 6c1.31 0 2.42-.84 2.83-2.01l7.48 3.04c-.2.41-.31.87-.31 1.37a3 3 0 103-3c-.5 0-.97.12-1.39.34L10.13 13.7c.2-.41.31-.87.31-1.37s-.11-.96-.31-1.37l7.48-3.04c.42 1.17 1.52 2.01 2.83 2.01z"
+          fill="white"
+        />
+      </svg>
+    </button>
+  );
+}
 
 
 /* ---------------- NAV ---------------- */
