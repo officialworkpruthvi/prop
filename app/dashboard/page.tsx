@@ -6,7 +6,7 @@ import PropertyCard from "@/components/dashboard/PropertyCard";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
