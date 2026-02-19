@@ -15,6 +15,13 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+  }
+}
+
+
 // Google provider
 const provider = new GoogleAuthProvider();
 
