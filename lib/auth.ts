@@ -86,7 +86,7 @@ export const setupRecaptcha = (containerId: string) => {
 };
 
 // Send OTP
-export const sendOTP = async (phoneNumber) => {
+export const sendOTP = async (phoneNumber : string) => {
   setupRecaptcha("recaptcha-container");
 
   const appVerifier = window.recaptchaVerifier;
@@ -101,7 +101,7 @@ export const sendOTP = async (phoneNumber) => {
 };
 
 // Verify OTP
-export const verifyOTP = async (otp) => {
+export const verifyOTP = async (otp : string) => {
   const result = await window.confirmationResult.confirm(otp);
   return result.user;
 };
