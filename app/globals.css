@@ -37,3 +37,74 @@ body {
 .add-btn{
   @apply bg-black text-white px-4 py-2 rounded-lg text-sm hover:opacity-90 transition;
 }
+/* super light fade animation */
+.fadeUp {
+  opacity: 0;
+  transform: translateY(25px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+html, body {
+  overflow-x: clip;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+/* Width of scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track (background) */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Scroll thumb */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    #22c55e,
+    #16a34a
+  );
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Hover effect */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    #16a34a,
+    #15803d
+  );
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #16a34a transparent;
+}
+/* Hide by default */
+body::-webkit-scrollbar-thumb {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Show while scrolling */
+body:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+/* Momentum scroll on iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+}
+

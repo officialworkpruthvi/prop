@@ -137,12 +137,28 @@ export default function EditListingPage() {
 
         configurations,
 
-        amenities: amenities.split(",").map((a) => a.trim()),
+        amenities: amenities
+  .split(",")
+  .map((a) => a.trim())
+  .filter(Boolean),
 
-        qrCodeImage,
-        unitPlanImages: unitPlanImages.split(",").map((i) => i.trim()),
-        floorPlanImages: floorPlanImages.split(",").map((i) => i.trim()),
-        propertyImages: propertyImages.split(",").map((i) => i.trim()),
+qrCodeImage: qrCodeImage.trim(),
+
+unitPlanImages: unitPlanImages
+  .split(",")
+  .map((i) => i.trim())
+  .filter(Boolean),
+
+floorPlanImages: floorPlanImages
+  .split(",")
+  .map((i) => i.trim())
+  .filter(Boolean),
+
+propertyImages: propertyImages
+  .split(",")
+  .map((i) => i.trim())
+  .filter(Boolean),
+
 
         updatedAt: serverTimestamp(),
       });

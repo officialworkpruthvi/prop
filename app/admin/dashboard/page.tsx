@@ -84,6 +84,13 @@ export default function DashboardPage() {
           >
             + Add Property
           </button>
+          <button
+  onClick={() => router.push("/admin/seller-requests")}
+  className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm"
+>
+  Seller Requests
+</button>
+
         </div>
 
         {/* SEARCH */}

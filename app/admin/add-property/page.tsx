@@ -10,6 +10,15 @@ export default function AddListingPage() {
 
   const [loading, setLoading] = useState(false);
 
+  const parseImageUrls = (text) => {
+  if (!text) return [];
+
+  return text
+    .split(",")
+    .map((url) => url.trim())
+    .filter((url) => url !== "" && url.startsWith("http"));
+};
+
   // ===== BASIC INFO =====
   const [propertyName, setPropertyName] = useState("");
   const [developerName, setDeveloperName] = useState("");
@@ -63,6 +72,9 @@ export default function AddListingPage() {
     setConfigurations(updated);
   };
 
+  
+
+
   const handleSubmit = async () => {
     if (!propertyName || !developerName) {
       alert("Property name and developer are required");
@@ -100,9 +112,10 @@ export default function AddListingPage() {
           .filter(Boolean),
 
         qrCodeImage,
-        unitPlanImages: unitPlanImages.split(",").map((i) => i.trim()),
-        floorPlanImages: floorPlanImages.split(",").map((i) => i.trim()),
-        propertyImages: propertyImages.split(",").map((i) => i.trim()),
+        unitPlanImages: parseImageUrls(unitPlanImages),
+        floorPlanImages: parseImageUrls(floorPlanImages),
+        propertyImages: parseImageUrls(propertyImages),
+
 
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),

@@ -5,6 +5,10 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useParams } from "next/navigation";
 import Header from "@/components/Header";
+import PropertyGallery from "@/components/PropertyGallery";
+import LayoutPlans from "@/components/LayoutPlans";
+
+
 
 function Sections({ listing }: any) {
   return (
@@ -17,8 +21,11 @@ function Sections({ listing }: any) {
 
             {/* LAYOUT */}
             <SectionCard title="Layout Plan">
-              <ImageGrid images={listing.floorPlanImages} />
-            </SectionCard>
+  <LayoutPlans
+    unitPlans={listing.unitPlanImages}
+    floorPlans={listing.floorPlanImages}
+  />
+</SectionCard>
 
             {/* PROPERTY DETAILS — MOST IMPORTANT PART */}
             <SectionCard title="Property Details">
@@ -232,11 +239,10 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
 
           {/* LEFT IMAGE */}
           <div className="rounded-[22px] overflow-hidden">
-            <img
-              src={listing?.propertyImages?.[0]}
-              alt={listing?.propertyName}
-              className="w-full h-[260px] sm:h-[340px] lg:h-[420px] object-cover"
-            />
+            
+              <PropertyGallery images={listing?.propertyImages} />
+
+              
           </div>
 
           {/* RIGHT CONTENT */}
