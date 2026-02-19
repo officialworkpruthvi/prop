@@ -8,13 +8,24 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
+interface SellerRequest {
+  id: string;
+  propertyName: string;
+  developerName: string;
+  sellerPhone?: string;
+  status?: string;
+  adminMessage?: string;
+  [key: string]: any;
+}
+
+
 // GET ALL REQUESTS
 export const getSellerRequests = async () => {
   const snap = await getDocs(collection(db, "seller_requests"));
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
 
-export const approveSellerRequest = async (req) => {
+export const approveSellerRequest = async (req : SellerRequest) => {
   const {
     id,
     sellerPhone,
