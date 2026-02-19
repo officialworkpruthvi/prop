@@ -104,7 +104,7 @@ export default function EditListingPage() {
     setConfigurations(configurations.filter((_, i) => i !== index));
   };
 
-  const handleConfigChange = (index: number, field: string, value: string) => {
+  const handleConfigChange = (index: number, field: "type" | "carpetArea", value: string) => {
     const updated = [...configurations];
     updated[index][field] = value;
     setConfigurations(updated);
