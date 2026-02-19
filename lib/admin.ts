@@ -63,14 +63,14 @@ export const approveSellerRequest = async (req : SellerRequest) => {
 
 
 // REJECT REQUEST
-export const rejectSellerRequest = async (id) => {
+export const rejectSellerRequest = async (id: string) => {
   await updateDoc(doc(db, "seller_requests", id), {
     status: "rejected",
   });
 };
 
 // MESSAGE SELLER
-export const sendSellerMessage = async (id, message) => {
+export const sendSellerMessage = async (id : string, message : string) => {
   await updateDoc(doc(db, "seller_requests", id), {
     adminMessage: message,
   });
