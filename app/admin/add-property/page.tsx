@@ -4,6 +4,7 @@ import { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+export const dynamic = 'force-dynamic';
 
 export default function AddListingPage() {
   const router = useRouter();
