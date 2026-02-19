@@ -66,7 +66,7 @@ export const listenToAuth = (callback: (user: any) => void) => {
   });
 };
 // Setup invisible recaptcha
-export const setupRecaptcha = (containerId) => {
+export const setupRecaptcha = (containerId: string) => {
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(
       auth,
