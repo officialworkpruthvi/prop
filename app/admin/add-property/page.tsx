@@ -10,7 +10,7 @@ export default function AddListingPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const parseImageUrls = (text) => {
+  const parseImageUrls = (text:string) => {
   if (!text) return [];
 
   return text
