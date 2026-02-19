@@ -1,67 +1,45 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { getUserRequests } from "@/lib/user";
+import { listenToAuth } from "@/lib/auth";
+import { getUserSellerRequests } from "@/lib/firestore";
+import PropertyCard from "@/components/dashboard/PropertyCard";
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<any>(null);
-  const [requests, setRequests] = useState<any[]>([]);
+  const [user, setUser] = useState(null);
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
+    const unsub = listenToAuth(async (u) => {
       if (!u) return;
 
       setUser(u);
-      const data = await getUserRequests(u.email);
-      setRequests(data);
+      const data = await getUserSellerRequests(u.email);
+      setProperties(data);
       setLoading(false);
     });
 
     return () => unsub();
   }, []);
 
-  if (loading) return <p className="p-10">Loading dashboard...</p>;
+  if (loading)
+    return (
+      <div className="p-10 text-center text-gray-500">
+        Loading your properties...
+      </div>
+    );
 
   return (
-    <div className="p-10 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">My Properties</h1>
+    <div className="max-w-6xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-semibold mb-10">My Properties</h1>
 
-      {requests.length === 0 && (
-        <p>You have not submitted any properties yet.</p>
+      {properties.length === 0 && (
+        <div className="text-gray-500">No properties submitted yet.</div>
       )}
 
-      <div className="grid gap-6">
-        {requests.map((req) => (
-          <div key={req.id} className="border p-6 rounded-lg">
-            <h2 className="text-xl font-semibold">{req.title}</h2>
-            <p>{req.location}</p>
-            <p className="mt-2">₹ {req.price}</p>
-
-            <div className="mt-3">
-              <span className="font-semibold">Status: </span>
-              <span
-                className={
-                  req.status === "approved"
-                    ? "text-green-600"
-                    : req.status === "rejected"
-                    ? "text-red-600"
-                    : "text-yellow-600"
-                }
-              >
-                {req.status}
-              </span>
-            </div>
-
-            {req.adminMessage && (
-              <div className="mt-3 bg-gray-100 p-3 rounded">
-                <strong>Admin message:</strong>
-                <p>{req.adminMessage}</p>
-              </div>
-            )}
-          </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {properties.map((property) => (
+          <PropertyCard key={property.id} property={property} />
         ))}
       </div>
     </div>

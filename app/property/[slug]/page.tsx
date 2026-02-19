@@ -301,17 +301,18 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
 
             {/* CARPET AREA */}
             <div className="text-gray-700">
-              Carpet area:{" "}
+              Property Type:{" "}
               <span className="font-semibold">
-                {listing?.carpetArea || "895"} sq.ft.
+                {listing.propertyType || "--"}
               </span>
             </div>
 
             {/* PRICE STATS */}
             <div className="grid grid-cols-3 gap-3">
-              <StatBox title="Avg Price /Sq.ft" value={`₹ ${listing?.price?.avgSqft || "6,141"}`} />
-              <StatBox title="Total Price" value={`₹ ${listing?.price?.total || "86.48L"}`} />
-              <StatBox title="EMI Starts At" value={`₹ ${listing?.price?.emi || "77.81K"}`} />
+              <StatBox title="Project Area" value={` ${listing.projectArea || "--"} sq.ft.
+`} />
+              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice || "--"}`} />
+              <StatBox title="Possession" value={` ${listing.status || "--"}`} />
             </div>
 
             {/* CTA BUTTONS */}

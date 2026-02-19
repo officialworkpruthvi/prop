@@ -162,15 +162,13 @@ export default function DashboardPage() {
                         Delete
                       </button>
 
-                      {listing.mapLink && (
-                        <a
-                          href={listing.mapLink}
-                          target="_blank"
-                          className="text-gray-600 hover:underline"
-                        >
-                          View
-                        </a>
-                      )}
+                      <button
+  onClick={() => router.push(`/property/${listing.id}`)}
+  className="text-green-600 hover:underline"
+>
+  View
+</button>
+
                     </td>
                   </tr>
                 ))}
