@@ -1,30 +1,33 @@
-"use client"; // ✅ keep this
+"use client";
 
 import { useEffect, useState } from "react";
 
 export default function SellPropertyPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [firebase, setFirebase] = useState<any>(null); // lazy import
+  const [firebaseLib, setFirebaseLib] = useState(null); // ✅ just null, no `any`
 
   useEffect(() => {
-    // import Firebase only on client
+    // Lazy-load Firebase modules only on the client
     import("@/lib/auth").then((mod) => {
-      const { listenToAuth } = mod;
-      setFirebase(mod);
+      setFirebaseLib(mod); // store module reference
 
-      const unsub = listenToAuth(setUser);
+      const unsub = mod.listenToAuth(setUser);
       return () => unsub();
     });
   }, []);
 
   const handleSubmit = async () => {
-    if (!user || !firebase) return alert("Sign in first");
+    if (!user || !firebaseLib) return alert("Sign in first");
 
     setLoading(true);
-    const { submitSellerRequest } = firebase;
 
-    const data = { userEmail: user.email, /* ...rest of your form data */ };
+    const { submitSellerRequest } = firebaseLib;
+
+    const data = {
+      userEmail: user.email,
+      // ... add all your form data here
+    };
 
     try {
       await submitSellerRequest(data);
@@ -40,9 +43,15 @@ export default function SellPropertyPage() {
   if (!user) return <div>Please sign in first.</div>;
 
   return (
-    <div>
-      <h1>Sell Property</h1>
-      <button onClick={handleSubmit}>
+    <div className="max-w-3xl mx-auto py-16 px-6 space-y-6">
+      <h1 className="text-3xl font-semibold">Sell Property</h1>
+
+      {/* Your form inputs here */}
+
+      <button
+        onClick={handleSubmit}
+        className="bg-black text-white px-6 py-4 rounded-xl w-full"
+      >
         {loading ? "Submitting..." : "Submit Property"}
       </button>
     </div>
