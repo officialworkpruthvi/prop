@@ -8,7 +8,7 @@ import Header from "@/components/Header";
 import PropertyGallery from "@/components/PropertyGallery";
 import LayoutPlans from "@/components/LayoutPlans";
 
-
+/* ---------------- SECTIONS ---------------- */
 
 function Sections({ listing }: any) {
   return (
@@ -21,16 +21,15 @@ function Sections({ listing }: any) {
 
             {/* LAYOUT */}
             <SectionCard id="layout" title="Layout Plan">
-  <LayoutPlans
-    unitPlans={listing.unitPlanImages}
-    floorPlans={listing.floorPlanImages}
-  />
-</SectionCard>
+              <LayoutPlans
+                unitPlans={listing.unitPlanImages}
+                floorPlans={listing.floorPlanImages}
+              />
+            </SectionCard>
 
-            {/* PROPERTY DETAILS — MOST IMPORTANT PART */}
+            {/* PROPERTY DETAILS */}
             <SectionCard id="details" title="Property Details">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
-                
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
                 <DetailItem label="Units" value={listing.totalUnits} />
                 <DetailItem label="Project Area" value={listing.projectArea} />
                 <DetailItem label="Carpet Area" value={listing.carpetArea} />
@@ -42,24 +41,19 @@ function Sections({ listing }: any) {
                 <DetailItem label="Property Type" value="Residential" />
                 <DetailItem label="RERA ID" value={listing.reraId} />
                 <DetailItem label="Possession" value={listing.possessionDate} />
-
               </div>
             </SectionCard>
 
             {/* CONFIGURATIONS */}
-            <SectionCard id="configurations" title="Configurations">
+            <SectionCard id="highlights" title="Configurations">
               <div className="grid md:grid-cols-3 gap-6">
                 {listing.configurations?.map((c: any, i: number) => (
                   <div
                     key={i}
                     className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition"
                   >
-                    <div className="text-lg font-semibold text-gray-800">
-                      {c.type}
-                    </div>
-                    <div className="text-gray-500 mt-1 text-sm">
-                      {c.carpetArea}
-                    </div>
+                    <div className="text-lg font-semibold text-gray-800">{c.type}</div>
+                    <div className="text-gray-500 mt-1 text-sm">{c.carpetArea}</div>
                   </div>
                 ))}
               </div>
@@ -113,34 +107,35 @@ function Sections({ listing }: any) {
     </div>
   );
 }
-function SectionCard({ id,title, children }: any) {
+
+/* ---------------- SECTION CARD ---------------- */
+
+function SectionCard({ id, title, children }: any) {
   return (
-    <section id={id} >
+    <section id={id}>
       <div className="bg-white rounded-[22px] border border-gray-200 overflow-hidden">
-        
-        {/* soft grey header strip */}
         <div className="bg-[#eef2f1] px-8 py-5">
-          <h2 className="text-xl font-semibold text-gray-800">
-            {title}
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
         </div>
-
-        <div className="p-8">
-          {children}
-        </div>
-
+        <div className="p-8">{children}</div>
       </div>
     </section>
   );
 }
+
+/* ---------------- DETAIL ITEM ---------------- */
+
 function DetailItem({ label, value }: any) {
   return (
-    <div className="border-b border-gray-200 pb-4">
+    <div className="border-b border-gray-200 pb-4 break-words">
       <div className="text-gray-500 text-sm">{label}</div>
       <div className="text-gray-800 font-medium mt-1">{value}</div>
     </div>
   );
 }
+
+/* ---------------- STICKY FORM ---------------- */
+
 function StickyForm() {
   return (
     <div className="sticky top-24 bg-white border border-gray-200 rounded-[22px] p-7">
@@ -183,7 +178,7 @@ function StickyForm() {
   );
 }
 
-
+/* ---------------- PROPERTY PAGE ---------------- */
 
 export default function PropertyPage() {
   const { slug } = useParams();
@@ -217,6 +212,9 @@ export default function PropertyPage() {
     </main>
   );
 }
+
+/* ---------------- HERO ---------------- */
+
 import React from "react";
 
 type HeroProps = {
@@ -232,23 +230,16 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
   return (
     <section className="bg-[#f6f8f7] pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-6">
-
-        {/* MAIN HERO CARD */}
         <div className="relative bg-white rounded-[28px] border border-gray-200 p-6 lg:p-8 grid lg:grid-cols-2 gap-8 items-start overflow-hidden">
-
 
           {/* LEFT IMAGE */}
           <div className="rounded-[22px] overflow-hidden">
-            
-              <PropertyGallery images={listing?.propertyImages} />
-
-              
+            <PropertyGallery images={listing?.propertyImages} />
           </div>
 
           {/* RIGHT CONTENT */}
           <div className="flex flex-col gap-5">
 
-            {/* TITLE + COMPARE */}
             <div className="flex justify-between items-start gap-4">
               <div>
                 <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
@@ -258,11 +249,8 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
                   By {listing?.developerName}
                 </p>
               </div>
-
-              
             </div>
 
-            {/* CONFIG TAGS */}
             {listing?.configurations?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {listing.configurations.map((conf: any, idx: number) => (
@@ -276,14 +264,10 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
               </div>
             )}
 
-            {/* LOCATION */}
-            <p className="text-gray-600 text-sm">
-              📍 {listing.address}
-            </p>
+            <p className="text-gray-600 text-sm">📍 {listing.address}</p>
 
             <hr className="border-gray-200" />
 
-            {/* AMENITIES PILLS */}
             {amenities.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {amenities.slice(0, 3).map((item, i) => (
@@ -299,33 +283,25 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
               </div>
             )}
 
-            {/* CARPET AREA */}
             <div className="text-gray-700">
               Property Type:{" "}
-              <span className="font-semibold">
-                {listing.propertyType || "--"}
-              </span>
+              <span className="font-semibold">{listing.propertyType || "--"}</span>
             </div>
 
-            {/* PRICE STATS */}
-            <div className="grid grid-cols-3 gap-3">
-              <StatBox title="Project Area" value={` ${listing.projectArea || "--"} sq.ft.
-`} />
-              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice  || "-"} ${listing.price.priceLabel  || "-"}`} />
-              <StatBox title="Possession" value={` ${listing.status || "--"}`} />
+            {/* PRICE STATS WITH RESPONSIVE GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              <StatBox title="Project Area" value={`${listing.projectArea || "--"} sq.ft.`} />
+              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice || "-"} ${listing.price.priceLabel || "-"}`} />
+              <StatBox title="Possession" value={`${listing.status || "--"}`} />
             </div>
 
-            {/* CTA BUTTONS */}
             <div className="flex gap-3 pt-2">
               <button className="bg-[#35a66a] hover:bg-[#2f955f] text-white px-6 py-3 rounded-xl font-semibold">
                 Contact Now
               </button>
-             
             </div>
-
           </div>
 
-          {/* QR FLOAT (DESKTOP ONLY) */}
           {listing?.qrCodeImage && (
             <div className="hidden lg:flex absolute right-10 top-5 flex-col items-center bg-white border border-gray-200 rounded-2xl p-4">
               <img
@@ -341,23 +317,25 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
     </section>
   );
 };
+
+/* ---------------- STATBOX ---------------- */
+
 function StatBox({ title, value }: any) {
   return (
-    <div className="border border-[#bfe3ce] bg-[#eef6f1] rounded-xl p-3">
+    <div className="border border-[#bfe3ce] bg-[#eef6f1] rounded-xl p-3 break-words">
       <div className="text-xs text-gray-600">{title}</div>
       <div className="font-semibold text-gray-900 mt-1">{value}</div>
     </div>
   );
 }
+
+/* ---------------- SHARE FAB ---------------- */
+
 function ShareFab() {
   const share = async () => {
     const url = window.location.href;
-
     if (navigator.share) {
-      await navigator.share({
-        title: document.title,
-        url
-      });
+      await navigator.share({ title: document.title, url });
     } else {
       await navigator.clipboard.writeText(url);
       alert("Property link copied!");
@@ -370,7 +348,6 @@ function ShareFab() {
       className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#243b55] hover:bg-[#1e2f44] flex items-center justify-center shadow-md transition"
       aria-label="Share Property"
     >
-      {/* SVG Share Icon */}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
         <path
           d="M18 8a3 3 0 10-2.83-4H15a3 3 0 000 6c.5 0 .97-.12 1.39-.34L8.91 12.7A3 3 0 006 11a3 3 0 100 6c1.31 0 2.42-.84 2.83-2.01l7.48 3.04c-.2.41-.31.87-.31 1.37a3 3 0 103-3c-.5 0-.97.12-1.39.34L10.13 13.7c.2-.41.31-.87.31-1.37s-.11-.96-.31-1.37l7.48-3.04c.42 1.17 1.52 2.01 2.83 2.01z"
@@ -381,8 +358,7 @@ function ShareFab() {
   );
 }
 
-
-/* ---------------- NAV ---------------- */
+/* ---------------- NAVIGATION ---------------- */
 
 function SectionNav() {
   const sections = [
@@ -398,45 +374,19 @@ function SectionNav() {
     <nav className="sticky top-0 z-20 bg-white/80 backdrop-blur border-y">
       <div className="max-w-7xl mx-auto px-6 flex gap-8 py-3 overflow-x-auto">
         {sections.map((id) => (
-          <a
+          <button
             key={id}
-            href={`#${id}`}
+            onClick={() => {
+              const el = document.getElementById(id);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
             className="text-sm font-medium text-gray-700 hover:text-black transition whitespace-nowrap"
           >
             {id.toUpperCase()}
-          </a>
+          </button>
         ))}
       </div>
     </nav>
-  );
-}
-
-
-
-/* ---------------- REUSABLE ---------------- */
-
-function Section({ id, title, children }: any) {
-  return (
-    <section id={id}>
-      <h2 className="text-3xl font-semibold mb-8">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function ImageGrid({ images = [] }: { images: string[] }) {
-  if (!images.length) return <p>No images available</p>;
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-      {images.map((img, i) => (
-        <img
-          key={i}
-          src={img}
-          className="w-full h-44 object-cover rounded-xl hover:scale-105 transition"
-        />
-      ))}
-    </div>
   );
 }
 
@@ -454,3 +404,6 @@ function FinalCTA() {
     </section>
   );
 }
+
+/* ---------------- GLOBAL CSS FOR SMOOTH SCROLL ---------------- */
+/* Add this to your global.css or tailwind base */
