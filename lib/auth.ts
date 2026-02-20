@@ -1,25 +1,16 @@
 "use client";
 
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth } from "./firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-
-declare global {
-  interface Window {
-    // No OTP stuff needed
-  }
-}
 
 const provider = new GoogleAuthProvider();
 
-/* ---------------- SIGN IN ---------------- */
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Create / get user document
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
@@ -31,7 +22,6 @@ export const signInWithGoogle = async () => {
         photo: user.photoURL,
         createdAt: serverTimestamp(),
       });
-      console.log("New user saved to Firestore");
     }
 
     return user;
@@ -40,7 +30,6 @@ export const signInWithGoogle = async () => {
   }
 };
 
-/* ---------------- LOGOUT ---------------- */
 export const logoutUser = async () => {
   try {
     await signOut(auth);
@@ -49,8 +38,7 @@ export const logoutUser = async () => {
   }
 };
 
-/* ---------------- AUTH LISTENER ---------------- */
 export const listenToAuth = (callback: (user: any) => void) => {
-  if (typeof window === "undefined") return () => {}; // prevent SSR errors
+  if (typeof window === "undefined") return () => {};
   return onAuthStateChanged(auth, (user) => callback(user));
 };
