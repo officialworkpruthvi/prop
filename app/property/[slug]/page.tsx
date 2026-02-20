@@ -20,7 +20,7 @@ function Sections({ listing }: any) {
           <div className="lg:col-span-2 space-y-20">
 
             {/* LAYOUT */}
-            <SectionCard title="Layout Plan">
+            <SectionCard id="layout" title="Layout Plan">
   <LayoutPlans
     unitPlans={listing.unitPlanImages}
     floorPlans={listing.floorPlanImages}
@@ -28,7 +28,7 @@ function Sections({ listing }: any) {
 </SectionCard>
 
             {/* PROPERTY DETAILS — MOST IMPORTANT PART */}
-            <SectionCard title="Property Details">
+            <SectionCard id="details" title="Property Details">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
                 
                 <DetailItem label="Units" value={listing.totalUnits} />
@@ -47,7 +47,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* CONFIGURATIONS */}
-            <SectionCard title="Configurations">
+            <SectionCard id="configurations" title="Configurations">
               <div className="grid md:grid-cols-3 gap-6">
                 {listing.configurations?.map((c: any, i: number) => (
                   <div
@@ -66,7 +66,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* AMENITIES */}
-            <SectionCard title="Amenities">
+            <SectionCard id="amenities" title="Amenities">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {listing.amenities?.map((a: string) => (
                   <div
@@ -80,7 +80,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* LOCATION */}
-            <SectionCard title="Location">
+            <SectionCard id="location" title="Location">
               <iframe
                 src={listing.mapLink}
                 className="w-full h-[420px] rounded-xl border border-gray-200"
@@ -89,7 +89,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* DEVELOPER */}
-            <SectionCard title="About Developer">
+            <SectionCard id="developer" title="About Developer">
               <p className="text-gray-600 leading-relaxed max-w-3xl">
                 {listing.developerName} is a reputed real estate developer known
                 for timely delivery, premium construction quality, and thoughtful design.
@@ -113,9 +113,9 @@ function Sections({ listing }: any) {
     </div>
   );
 }
-function SectionCard({ title, children }: any) {
+function SectionCard({ id,title, children }: any) {
   return (
-    <section>
+    <section id={id} >
       <div className="bg-white rounded-[22px] border border-gray-200 overflow-hidden">
         
         {/* soft grey header strip */}
