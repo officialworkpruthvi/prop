@@ -301,9 +301,9 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
 
             {/* CARPET AREA */}
             <div className="text-gray-700">
-              Property Type:{" "}
+              Possession:{" "}
               <span className="font-semibold">
-                {listing.propertyType || "--"}
+                {listing.status || "--"}
               </span>
             </div>
 
@@ -312,7 +312,7 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
               <StatBox title="Project Area" value={` ${listing.projectArea || "--"} sq.ft.
 `} />
               <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice  || "-"} ${listing.price.priceLabel  || "-"}`} />
-              <StatBox title="Possession" value={` ${listing.status || "--"}`} />
+              <StatBox title="Property Type" value={` ${listing.propertyType || "--"}`} />
             </div>
 
             {/* CTA BUTTONS */}
