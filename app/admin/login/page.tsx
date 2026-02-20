@@ -1,9 +1,7 @@
 "use client";
 
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // 🔐 ADMIN EMAIL ALLOWLIST
 const ADMIN_EMAILS = ["samarthbhuruk@gmail.com"];
@@ -21,12 +19,11 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const userCred = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      // 🔹 Lazy-load Firebase only in browser
+      const { auth } = await import("@/lib/firebase");
+      const { signInWithEmailAndPassword, signOut } = await import("firebase/auth");
 
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
       const userEmail = userCred.user.email;
 
       // 🚫 BLOCK NON-ADMIN USERS
@@ -52,9 +49,7 @@ export default function AdminLogin() {
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
 
-        {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
 
         <input
           type="email"
