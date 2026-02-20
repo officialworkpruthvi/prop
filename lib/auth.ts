@@ -1,29 +1,25 @@
+// lib/auth.ts
 "use client";
 
 import { db } from "./firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
-
 import { auth } from "./firebase";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
   onAuthStateChanged,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
 } from "firebase/auth";
 
 declare global {
   interface Window {
     recaptchaVerifier: any;
-    confirmationResult :any;
+    confirmationResult: any;
   }
 }
 
-
-// Google provider
 const provider = new GoogleAuthProvider();
 
 /* ---------------- SIGN IN ---------------- */
@@ -32,11 +28,9 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // 🔥 create / get user document
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
-    // If new user → save in Firestore
     if (!userSnap.exists()) {
       await setDoc(userRef, {
         uid: user.uid,
@@ -45,10 +39,7 @@ export const signInWithGoogle = async () => {
         photo: user.photoURL,
         createdAt: serverTimestamp(),
       });
-
       console.log("New user saved to Firestore");
-    } else {
-      console.log("Existing user logged in");
     }
 
     return user;
@@ -56,7 +47,6 @@ export const signInWithGoogle = async () => {
     console.error("Google Sign-in Error:", err);
   }
 };
-
 
 /* ---------------- LOGOUT ---------------- */
 export const logoutUser = async () => {
@@ -69,40 +59,37 @@ export const logoutUser = async () => {
 
 /* ---------------- AUTH LISTENER ---------------- */
 export const listenToAuth = (callback: (user: any) => void) => {
-  return onAuthStateChanged(auth, (user) => {
-    callback(user);
-  });
+  if (typeof window === "undefined") return () => {}; // prevent SSR errors
+  return onAuthStateChanged(auth, (user) => callback(user));
 };
-// Setup invisible recaptcha
+
+// Setup invisible recaptcha (browser only)
 export const setupRecaptcha = (containerId: string) => {
+  if (typeof window === "undefined") return; // prevent SSR
   if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      containerId,
-      {
-        size: "invisible",
-      }
-    );
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+      size: "invisible",
+    });
   }
 };
 
-// Send OTP
-export const sendOTP = async (phoneNumber : string) => {
+// Send OTP (browser only)
+export const sendOTP = async (phoneNumber: string) => {
+  if (typeof window === "undefined") return;
   setupRecaptcha("recaptcha-container");
 
   const appVerifier = window.recaptchaVerifier;
-
   const confirmationResult = await signInWithPhoneNumber(
     auth,
     phoneNumber,
     appVerifier
   );
-
   window.confirmationResult = confirmationResult;
 };
 
-// Verify OTP
-export const verifyOTP = async (otp : string) => {
+// Verify OTP (browser only)
+export const verifyOTP = async (otp: string) => {
+  if (typeof window === "undefined") return null;
   const result = await window.confirmationResult.confirm(otp);
   return result.user;
 };
