@@ -311,7 +311,7 @@ const Hero: React.FC<HeroProps> = ({ listing }) => {
             <div className="grid grid-cols-3 gap-3">
               <StatBox title="Project Area" value={` ${listing.projectArea || "--"} sq.ft.
 `} />
-              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice || "--"}`} />
+              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice  || "-"} ${listing.price.priceLabel  || "-"}`} />
               <StatBox title="Possession" value={` ${listing.status || "--"}`} />
             </div>
 
