@@ -1,22 +1,13 @@
-// lib/auth.ts
 "use client";
 
 import { db } from "./firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth } from "./firebase";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 declare global {
   interface Window {
-    recaptchaVerifier: any;
-    confirmationResult: any;
+    // No OTP stuff needed
   }
 }
 
@@ -28,6 +19,7 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    // Create / get user document
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
@@ -61,35 +53,4 @@ export const logoutUser = async () => {
 export const listenToAuth = (callback: (user: any) => void) => {
   if (typeof window === "undefined") return () => {}; // prevent SSR errors
   return onAuthStateChanged(auth, (user) => callback(user));
-};
-
-// Setup invisible recaptcha (browser only)
-export const setupRecaptcha = (containerId: string) => {
-  if (typeof window === "undefined") return; // prevent SSR
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-      size: "invisible",
-    });
-  }
-};
-
-// Send OTP (browser only)
-export const sendOTP = async (phoneNumber: string) => {
-  if (typeof window === "undefined") return;
-  setupRecaptcha("recaptcha-container");
-
-  const appVerifier = window.recaptchaVerifier;
-  const confirmationResult = await signInWithPhoneNumber(
-    auth,
-    phoneNumber,
-    appVerifier
-  );
-  window.confirmationResult = confirmationResult;
-};
-
-// Verify OTP (browser only)
-export const verifyOTP = async (otp: string) => {
-  if (typeof window === "undefined") return null;
-  const result = await window.confirmationResult.confirm(otp);
-  return result.user;
 };
