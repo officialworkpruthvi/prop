@@ -1,21 +1,4 @@
-Creating an optimized production build ...
-✓ Compiled successfully in 8.7s
-  Running TypeScript ...
-  Collecting page data using 1 worker ...
-  Generating static pages using 1 worker (0/10) ...
-  Generating static pages using 1 worker (2/10) 
-  Generating static pages using 1 worker (4/10) 
-  Generating static pages using 1 worker (7/10) 
-Error occurred prerendering page "/sell-property". Read more: https://nextjs.org/docs/messages/prerender-error
-Error [FirebaseError]: Firebase: Error (auth/invalid-api-key).
-    at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__f663d2da._.js:1:1150)
-    at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:740:9)
-    at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:763:12) {
-  code: 'auth/invalid-api-key',
-  customData: [Object],
-  digest: '1867414693'
 
-sell-property/page.jsx:
 "use client";
 
 import { useEffect, useState } from "react";
