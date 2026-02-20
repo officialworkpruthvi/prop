@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useParams } from "next/navigation";
@@ -8,19 +8,34 @@ import Header from "@/components/Header";
 import PropertyGallery from "@/components/PropertyGallery";
 import LayoutPlans from "@/components/LayoutPlans";
 
-/* ---------------- SECTIONS ---------------- */
-
 function Sections({ listing }: any) {
+  // create refs for each nav section
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const highlightsRef = useRef<HTMLDivElement>(null);
+  const amenitiesRef = useRef<HTMLDivElement>(null);
+  const locationRef = useRef<HTMLDivElement>(null);
+  const developerRef = useRef<HTMLDivElement>(null);
+
+  // refs mapping for nav
+  const sectionRefs: Record<string, any> = {
+    layout: layoutRef,
+    details: detailsRef,
+    highlights: highlightsRef,
+    amenities: amenitiesRef,
+    location: locationRef,
+    developer: developerRef,
+  };
+
   return (
     <div className="bg-[#f6f8f7] py-16">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-3 gap-10">
-
           {/* LEFT CONTENT */}
           <div className="lg:col-span-2 space-y-20">
 
             {/* LAYOUT */}
-            <SectionCard id="layout" title="Layout Plan">
+            <SectionCard title="Layout Plan" ref={layoutRef}>
               <LayoutPlans
                 unitPlans={listing.unitPlanImages}
                 floorPlans={listing.floorPlanImages}
@@ -28,16 +43,14 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* PROPERTY DETAILS */}
-            <SectionCard id="details" title="Property Details">
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
+            <SectionCard title="Property Details" ref={detailsRef}>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-12 text-[15px]">
                 <DetailItem label="Units" value={listing.totalUnits} />
                 <DetailItem label="Project Area" value={listing.projectArea} />
                 <DetailItem label="Carpet Area" value={listing.carpetArea} />
-
                 <DetailItem label="Configurations" value={listing.configurationsText} />
                 <DetailItem label="Developer" value={listing.developerName} />
                 <DetailItem label="Status" value={listing.status} />
-
                 <DetailItem label="Property Type" value="Residential" />
                 <DetailItem label="RERA ID" value={listing.reraId} />
                 <DetailItem label="Possession" value={listing.possessionDate} />
@@ -45,14 +58,16 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* CONFIGURATIONS */}
-            <SectionCard id="highlights" title="Configurations">
+            <SectionCard title="Configurations" ref={highlightsRef}>
               <div className="grid md:grid-cols-3 gap-6">
                 {listing.configurations?.map((c: any, i: number) => (
                   <div
                     key={i}
                     className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition"
                   >
-                    <div className="text-lg font-semibold text-gray-800">{c.type}</div>
+                    <div className="text-lg font-semibold text-gray-800">
+                      {c.type}
+                    </div>
                     <div className="text-gray-500 mt-1 text-sm">{c.carpetArea}</div>
                   </div>
                 ))}
@@ -60,7 +75,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* AMENITIES */}
-            <SectionCard id="amenities" title="Amenities">
+            <SectionCard title="Amenities" ref={amenitiesRef}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {listing.amenities?.map((a: string) => (
                   <div
@@ -74,7 +89,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* LOCATION */}
-            <SectionCard id="location" title="Location">
+            <SectionCard title="Location" ref={locationRef}>
               <iframe
                 src={listing.mapLink}
                 className="w-full h-[420px] rounded-xl border border-gray-200"
@@ -83,7 +98,7 @@ function Sections({ listing }: any) {
             </SectionCard>
 
             {/* DEVELOPER */}
-            <SectionCard id="developer" title="About Developer">
+            <SectionCard title="About Developer" ref={developerRef}>
               <p className="text-gray-600 leading-relaxed max-w-3xl">
                 {listing.developerName} is a reputed real estate developer known
                 for timely delivery, premium construction quality, and thoughtful design.
@@ -96,7 +111,6 @@ function Sections({ listing }: any) {
           <div className="hidden lg:block">
             <StickyForm />
           </div>
-
         </div>
 
         {/* MOBILE FORM */}
@@ -108,34 +122,31 @@ function Sections({ listing }: any) {
   );
 }
 
-/* ---------------- SECTION CARD ---------------- */
-
-function SectionCard({ id, title, children }: any) {
-  return (
-    <section id={id}>
-      <div className="bg-white rounded-[22px] border border-gray-200 overflow-hidden">
-        <div className="bg-[#eef2f1] px-8 py-5">
-          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-        </div>
-        <div className="p-8">{children}</div>
+// ---------------------- SECTION CARD ----------------------
+const SectionCard = React.forwardRef<HTMLDivElement, any>(({ title, children }, ref) => (
+  <section ref={ref}>
+    <div className="bg-white rounded-[22px] border border-gray-200 overflow-hidden">
+      {/* soft grey header strip */}
+      <div className="bg-[#eef2f1] px-8 py-5">
+        <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
       </div>
-    </section>
-  );
-}
+      <div className="p-8">{children}</div>
+    </div>
+  </section>
+));
+SectionCard.displayName = "SectionCard";
 
-/* ---------------- DETAIL ITEM ---------------- */
-
+// ---------------------- DETAIL ITEM ----------------------
 function DetailItem({ label, value }: any) {
   return (
-    <div className="border-b border-gray-200 pb-4 break-words">
+    <div className="border-b border-gray-200 pb-4">
       <div className="text-gray-500 text-sm">{label}</div>
       <div className="text-gray-800 font-medium mt-1">{value}</div>
     </div>
   );
 }
 
-/* ---------------- STICKY FORM ---------------- */
-
+// ---------------------- STICKY FORM ----------------------
 function StickyForm() {
   return (
     <div className="sticky top-24 bg-white border border-gray-200 rounded-[22px] p-7">
@@ -149,19 +160,16 @@ function StickyForm() {
           placeholder="Name"
           className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
         />
-
         <input
           type="email"
           placeholder="Email (optional)"
           className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
         />
-
         <input
           type="tel"
           placeholder="Phone Number"
           className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-green-600"
         />
-
         <label className="flex items-start gap-2 text-sm text-gray-600">
           <input type="checkbox" className="mt-1 w-4 h-4" />
           I agree to the
@@ -169,7 +177,6 @@ function StickyForm() {
             terms and conditions
           </span>
         </label>
-
         <button className="w-full bg-[#35a66a] hover:bg-[#2f955f] text-white py-3 rounded-lg font-semibold transition">
           ENQUIRE NOW
         </button>
@@ -178,12 +185,28 @@ function StickyForm() {
   );
 }
 
-/* ---------------- PROPERTY PAGE ---------------- */
-
+// ---------------------- PROPERTY PAGE ----------------------
 export default function PropertyPage() {
   const { slug } = useParams();
   const [listing, setListing] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // refs for nav scrolling
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const highlightsRef = useRef<HTMLDivElement>(null);
+  const amenitiesRef = useRef<HTMLDivElement>(null);
+  const locationRef = useRef<HTMLDivElement>(null);
+  const developerRef = useRef<HTMLDivElement>(null);
+
+  const sectionRefs: Record<string, any> = {
+    layout: layoutRef,
+    details: detailsRef,
+    highlights: highlightsRef,
+    amenities: amenitiesRef,
+    location: locationRef,
+    developer: developerRef,
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -206,161 +229,15 @@ export default function PropertyPage() {
     <main className="bg-neutral-50">
       <Header />
       <Hero listing={listing} />
-      <SectionNav />
+      <SectionNav sectionRefs={sectionRefs} />
       <Sections listing={listing} />
       <FinalCTA />
     </main>
   );
 }
 
-/* ---------------- HERO ---------------- */
-
-import React from "react";
-
-type HeroProps = {
-  listing: any;
-};
-const Hero: React.FC<HeroProps> = ({ listing }) => {
-  const amenities: string[] = Array.isArray(listing?.amenities)
-    ? listing.amenities
-    : typeof listing?.amenities === "string"
-    ? listing.amenities.split(",")
-    : [];
-
-  return (
-    <section className="bg-[#f6f8f7] pt-10 pb-6">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="relative bg-white rounded-[28px] border border-gray-200 p-6 lg:p-8 grid lg:grid-cols-2 gap-8 items-start overflow-hidden">
-
-          {/* LEFT IMAGE */}
-          <div className="rounded-[22px] overflow-hidden">
-            <PropertyGallery images={listing?.propertyImages} />
-          </div>
-
-          {/* RIGHT CONTENT */}
-          <div className="flex flex-col gap-5">
-
-            <div className="flex justify-between items-start gap-4">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
-                  {listing?.propertyName}
-                </h1>
-                <p className="text-gray-500 text-sm mt-1">
-                  By {listing?.developerName}
-                </p>
-              </div>
-            </div>
-
-            {listing?.configurations?.length > 0 && (
-              <div className="flex gap-2 flex-wrap">
-                {listing.configurations.map((conf: any, idx: number) => (
-                  <span
-                    key={idx}
-                    className="bg-[#eef6f1] text-[#2f855a] px-3 py-1 rounded-md text-sm"
-                  >
-                    {conf.type}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <p className="text-gray-600 text-sm">📍 {listing.address}</p>
-
-            <hr className="border-gray-200" />
-
-            {amenities.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {amenities.slice(0, 3).map((item, i) => (
-                  <span key={i} className="px-3 py-1 border rounded-full text-sm text-gray-600">
-                    {item.trim()}
-                  </span>
-                ))}
-                {amenities.length > 3 && (
-                  <span className="px-3 py-1 border rounded-full text-sm text-gray-600">
-                    +{amenities.length - 3}
-                  </span>
-                )}
-              </div>
-            )}
-
-            <div className="text-gray-700">
-              Property Type:{" "}
-              <span className="font-semibold">{listing.propertyType || "--"}</span>
-            </div>
-
-            {/* PRICE STATS WITH RESPONSIVE GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              <StatBox title="Project Area" value={`${listing.projectArea || "--"} sq.ft.`} />
-              <StatBox title="Starting Price" value={`₹ ${listing.price.startingPrice || "-"} ${listing.price.priceLabel || "-"}`} />
-              <StatBox title="Possession" value={`${listing.status || "--"}`} />
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button className="bg-[#35a66a] hover:bg-[#2f955f] text-white px-6 py-3 rounded-xl font-semibold">
-                Contact Now
-              </button>
-            </div>
-          </div>
-
-          {listing?.qrCodeImage && (
-            <div className="hidden lg:flex absolute right-10 top-5 flex-col items-center bg-white border border-gray-200 rounded-2xl p-4">
-              <img
-                src={listing.qrCodeImage}
-                className="w-28 h-28 object-contain"
-              />
-              <p className="text-xs text-gray-500 mt-2">Scan for brochure</p>
-            </div>
-          )}
-          <ShareFab />
-        </div>
-      </div>
-    </section>
-  );
-};
-
-/* ---------------- STATBOX ---------------- */
-
-function StatBox({ title, value }: any) {
-  return (
-    <div className="border border-[#bfe3ce] bg-[#eef6f1] rounded-xl p-3 break-words">
-      <div className="text-xs text-gray-600">{title}</div>
-      <div className="font-semibold text-gray-900 mt-1">{value}</div>
-    </div>
-  );
-}
-
-/* ---------------- SHARE FAB ---------------- */
-
-function ShareFab() {
-  const share = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      await navigator.share({ title: document.title, url });
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert("Property link copied!");
-    }
-  };
-
-  return (
-    <button
-      onClick={share}
-      className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#243b55] hover:bg-[#1e2f44] flex items-center justify-center shadow-md transition"
-      aria-label="Share Property"
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M18 8a3 3 0 10-2.83-4H15a3 3 0 000 6c.5 0 .97-.12 1.39-.34L8.91 12.7A3 3 0 006 11a3 3 0 100 6c1.31 0 2.42-.84 2.83-2.01l7.48 3.04c-.2.41-.31.87-.31 1.37a3 3 0 103-3c-.5 0-.97.12-1.39.34L10.13 13.7c.2-.41.31-.87.31-1.37s-.11-.96-.31-1.37l7.48-3.04c.42 1.17 1.52 2.01 2.83 2.01z"
-          fill="white"
-        />
-      </svg>
-    </button>
-  );
-}
-
-/* ---------------- NAVIGATION ---------------- */
-
-function SectionNav() {
+// ---------------------- SECTION NAV ----------------------
+function SectionNav({ sectionRefs }: any) {
   const sections = [
     "layout",
     "details",
@@ -370,16 +247,22 @@ function SectionNav() {
     "developer",
   ];
 
+  const handleClick = (id: string) => {
+    const ref = sectionRefs[id];
+    if (ref?.current) {
+      const topOffset = 80; // offset for sticky nav
+      const elementPosition = ref.current.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: elementPosition - topOffset, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-20 bg-white/80 backdrop-blur border-y">
       <div className="max-w-7xl mx-auto px-6 flex gap-8 py-3 overflow-x-auto">
         {sections.map((id) => (
           <button
             key={id}
-            onClick={() => {
-              const el = document.getElementById(id);
-              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
+            onClick={() => handleClick(id)}
             className="text-sm font-medium text-gray-700 hover:text-black transition whitespace-nowrap"
           >
             {id.toUpperCase()}
@@ -389,21 +272,3 @@ function SectionNav() {
     </nav>
   );
 }
-
-/* ---------------- CTA ---------------- */
-
-function FinalCTA() {
-  return (
-    <section className="bg-black text-white py-20 text-center">
-      <h2 className="text-3xl font-semibold mb-6">
-        Interested in this property?
-      </h2>
-      <button className="bg-white text-black px-10 py-4 rounded-full font-medium hover:opacity-90 transition">
-        Get Brochure / Call Now
-      </button>
-    </section>
-  );
-}
-
-/* ---------------- GLOBAL CSS FOR SMOOTH SCROLL ---------------- */
-/* Add this to your global.css or tailwind base */
