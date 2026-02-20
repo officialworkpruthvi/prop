@@ -1,25 +1,31 @@
 "use client";
 import { useEffect, useState } from "react";
-import { listenToAuth } from "@/lib/auth";
-import { getUserSellerRequests } from "@/lib/firestore";
 import PropertyCard from "@/components/dashboard/PropertyCard";
 
 export default function DashboardPage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = listenToAuth(async (u) => {
-      if (!u) return;
+    const init = async () => {
+      // Lazy-import Firebase-related functions
+      const { listenToAuth } = await import("@/lib/auth");
+      const { getUserSellerRequests } = await import("@/lib/firestore");
 
-      setUser(u);
-      const data = await getUserSellerRequests(u.email);
-      setProperties(data);
-      setLoading(false);
-    });
+      const unsub = listenToAuth(async (u) => {
+        if (!u) return;
 
-    return () => unsub();
+        setUser(u);
+        const data = await getUserSellerRequests(u.email);
+        setProperties(data);
+        setLoading(false);
+      });
+
+      return () => unsub();
+    };
+
+    init();
   }, []);
 
   if (loading)
