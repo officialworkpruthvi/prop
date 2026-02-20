@@ -1,12 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LoginModal from "./LoginModal";
+import LoginModal from "@/components/LoginModal";
 import { listenToAuth, logoutUser } from "@/lib/auth";
-import dynamic from "next/dynamic";
-
-// Optional: dynamically load LoginModal to be extra safe
-const DynamicLoginModal = dynamic(() => import("./LoginModal"), { ssr: false });
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,13 +10,17 @@ export default function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
+  /* scroll effect */
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => listenToAuth(setUser), []);
+  /* auth listener */
+  useEffect(() => {
+    return listenToAuth(setUser);
+  }, []);
 
   return (
     <>
@@ -30,11 +30,31 @@ export default function Header() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className={`font-bold text-xl ${scrolled ? "text-gray-900" : "text-white"}`}>
+          
+          <div className={`font-bold text-xl ${
+            scrolled ? "text-gray-900" : "text-white"
+          }`}>
             Matrubhumi
           </div>
 
           <div className="flex items-center gap-3">
+
+            {/* SELL PROPERTY */}
+            <button
+              onClick={() => {
+                if (!user) setLoginOpen(true);
+                else window.location.href = "/sell-property";
+              }}
+              className={`hidden sm:block px-4 py-2 rounded-full text-sm font-medium transition ${
+                scrolled
+                  ? "bg-gray-100 text-gray-800"
+                  : "bg-white/20 text-white"
+              }`}
+            >
+              Sell Property
+            </button>
+
+            {/* NOT LOGGED */}
             {!user && (
               <button
                 onClick={() => setLoginOpen(true)}
@@ -44,6 +64,7 @@ export default function Header() {
               </button>
             )}
 
+            {/* LOGGED USER */}
             {user && (
               <div className="relative">
                 <img
@@ -51,17 +72,21 @@ export default function Header() {
                   onClick={() => setDropdown(!dropdown)}
                   className="w-10 h-10 rounded-full cursor-pointer border"
                 />
+
                 {dropdown && (
                   <div className="absolute right-0 mt-3 bg-white shadow-xl rounded-xl p-3 w-48">
                     <p className="font-medium">{user.displayName}</p>
                     <p className="text-sm text-gray-500">{user.email}</p>
-                    <hr className="my-2" />
+
+                    <hr className="my-2"/>
+
                     <button
-                      onClick={() => (window.location.href = "/dashboard")}
+                      onClick={() => window.location.href="/dashboard"}
                       className="block w-full text-left py-2 hover:text-green-600"
                     >
                       My Dashboard
                     </button>
+
                     <button
                       onClick={logoutUser}
                       className="block w-full text-left py-2 text-red-500"
@@ -72,11 +97,12 @@ export default function Header() {
                 )}
               </div>
             )}
+
           </div>
         </div>
       </header>
 
-      <DynamicLoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
+      <LoginModal open={loginOpen} onClose={()=>setLoginOpen(false)} />
     </>
   );
 }
