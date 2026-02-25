@@ -7,7 +7,7 @@ export default function Header() {
         
         {/* Logo */}
         <div className="font-bold text-xl tracking-wide text-gray-900">
-          Matrubhumeee
+          Matrubhumie
         </div>
 
         {/* Actions */}
